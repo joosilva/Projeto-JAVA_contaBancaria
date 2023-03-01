@@ -1,11 +1,14 @@
 package contaBancaria;
 
+import contaBancaria.util.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class menu {
 
 	public static void main(String[] args) {
+		
+		Cores cor = new Cores ();
 
 		Scanner leia = new Scanner(System.in);
 
@@ -14,7 +17,9 @@ public class menu {
 		int codigoOperacao;
 		double saldo = 1000, valor, saque, deposito;
 
-		System.out.println("\t\nBEM-VINDE AO BANCO GEN!");
+		System.out.println(cor.TEXT_BLUE
+				+ "\t\nBEM-VINDE AO BANCO GEN!"
+				+ cor.TEXT_RESET);
 
 		while (true) {
 			do {
