@@ -29,7 +29,7 @@ public class ContaCorrente extends Conta {
 			setLimite(getLimite() + getSaldo());
 			setSaldo(0);
 		}
-		System.out.printf("Seu saldo atual é R$%.2f e seu limite é R$%.2f", getSaldo(), getLimite());
+		System.out.printf("Seu saldo atual é R$%f e seu limite é R$%f", getSaldo(), getLimite());
 		return true;
 	}
 	
@@ -37,7 +37,7 @@ public class ContaCorrente extends Conta {
 	@Override
 	public void visualizar() {
 		super.visualizar();
-		System.out.println("\nData de niversário: " + getLimite() + "."
+		System.out.println("\nLimite de Crédito: " + getLimite() + "."
 				+ cor.TEXT_YELLOW + "\n________________________________________________________\n" + cor.TEXT_RESET);
 	}
 

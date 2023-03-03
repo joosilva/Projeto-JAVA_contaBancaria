@@ -2,7 +2,7 @@ package contaBancaria.model;
 
 import contaBancaria.util.*;
 
-public class Conta {
+public abstract class Conta {
 
 	Cores cor = new Cores();
 
@@ -10,7 +10,7 @@ public class Conta {
 	private int agencia;
 	private int tipo;
 	private String titular;
-	private float saldo;
+	private float saldo = 0;
 
 	public Conta(String titular, int tipo, int numero, int agencia, float saldo) {
 		super();
@@ -68,13 +68,13 @@ public class Conta {
 		}
 
 		setSaldo(getSaldo() - valor);
-		System.out.printf("Seu saldo atual é R$%.2f", getSaldo());
+		System.out.println("Seu saldo atual é R$" + getSaldo() + ".");
 		return true;
 	}
 
 	public void depositar(float valor) {
 		setSaldo(getSaldo() + valor);
-		System.out.printf("Seu saldo atual é R$%.2f", getSaldo());
+		System.out.printf("Seu saldo atual é R$%f.", getSaldo());
 	}
 
 	public void visualizar() {
@@ -90,8 +90,9 @@ public class Conta {
 		}
 
 		System.out.println(cor.TEXT_YELLOW + "\n____________________DADOS BANCÁRIOS:____________________"
-				+ cor.TEXT_RESET + "\n\nTitular da Conta: " + getTitular() + ".\n" + tipo + "\nNº da Conta: "
-				+ getNumero() + "." + "\nAgência: " + getAgencia() + "." + "\nSaldo: " + getSaldo() + ".");
-	}
+				+ cor.TEXT_RESET + "\n\nTitular da Conta: " + getTitular() + ".\n" 
+				+ tipo + " - " + getNumero() + "." + "\nAgência: " + getAgencia() + "."
+				+ "\nSaldo: R$" + getSaldo() + ".");	
+		}
 
 }
