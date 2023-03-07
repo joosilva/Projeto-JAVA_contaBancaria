@@ -1,10 +1,11 @@
 package contaBancaria.controler;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Scanner;
 
-import contaBancaria.model.*;
+import contaBancaria.model.Conta;
+import contaBancaria.model.ContaCorrente;
 import contaBancaria.repository.Repository;
 
 public class Controller implements Repository {
@@ -21,17 +22,19 @@ public class Controller implements Repository {
 		this.contas = contas;
 	}
 
-	@SuppressWarnings("unused")
 	public int gerarNumero() {
+		boolean j = false;
 		int numero = 0;
 		for (int i = 0; i < contas.size(); i++) {
 			if (contas.get(i) == null) {
 				numero = i + 1;
-				return numero;
-			} else {
-				numero = contas.size() + 1;
+				j = true;
 				return numero;
 			}
+		}
+		if (j == false) {
+			numero = contas.size() + 1;
+			return numero;
 		}
 
 		return numero;
@@ -50,8 +53,12 @@ public class Controller implements Repository {
 
 	@Override
 	public void listarTodas() {
-		for (var conta : contas) {
+		for (int i = 0; i < contas.size(); i++) {
+			var conta = contas.get(i);
+			try {
 			conta.visualizar();
+			} catch (NullPointerException erro) {	
+			}
 		}
 
 	}
