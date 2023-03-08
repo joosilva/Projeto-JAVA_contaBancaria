@@ -5,7 +5,7 @@ public class ContaCorrente extends Conta {
 	float limite;
 
 	public ContaCorrente(String titular, String senha, int tipo, int numero, int agencia, float saldo, float limite) {
-		super(titular, tipo, numero, agencia, saldo);
+		super(titular, senha, tipo, numero, agencia, saldo);
 		this.limite = limite;
 	}
 

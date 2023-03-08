@@ -17,16 +17,16 @@ public class menu {
 
 		Controller contas = new Controller();
 
-		Conta contaTeste = new ContaCorrente("João Victor", 1, 1, 123, 0, 0);
+		Conta contaTeste = new ContaCorrente("João Victor", "123", 1, 1, 123, 0, 0);
 		contas.cadastrar(contaTeste);
 
 		Scanner leia = new Scanner(System.in);
 
 		boolean loop = true;
 
-		int codigoOperacao = 1, numero = 0, agencia = 0, tipo = 0, aniversario = 0;
+		int codigoOperacao = 1, numero = 0, agencia = 0, tipo = 0, aniversario = 0, i = 0;
 		float saldo = 0, limite = 0;
-		String titular;
+		String titular, senha;
 
 		System.out.println(cor.TEXT_YELLOW_BOLD + "\t\nBEM-VINDE AO BANCO GEN!" + cor.TEXT_RESET);
 
@@ -85,6 +85,8 @@ public class menu {
 				leia.skip("\\R?");
 				titular = leia.nextLine();
 
+				senha = contas.criarSenha();
+
 				do {
 					try {
 						System.out.println("\nDigite o número da agência:");
@@ -101,7 +103,7 @@ public class menu {
 				do {
 					try {
 						do {
-							System.out.println("\nSelecione o tipo da conta: \n1 - Conta Corrente\n2- Conta Poupança");
+							System.out.println("\nSelecione o tipo da conta: \n1 - Conta Corrente\n2 - Conta Poupança");
 							tipo = leia.nextInt();
 						} while (tipo < 1 && tipo > 2);
 
@@ -128,9 +130,9 @@ public class menu {
 							loop = true;
 						}
 					} while (loop);
-					
+
 					numero = contas.gerarNumero();
-					contas.cadastrar(new ContaCorrente(titular, tipo, numero, agencia, saldo, limite));
+					contas.cadastrar(new ContaCorrente(titular, senha, tipo, numero, agencia, saldo, limite));
 
 					System.out.println("\nConta criada com sucesso!");
 					contas.getContas().get(numero - 1).visualizar();
@@ -138,8 +140,10 @@ public class menu {
 				case 2 -> {
 					do {
 						try {
-							System.out.println("\nDigite o dia do deu aniversário:");
-							aniversario = leia.nextInt();
+							do {
+								System.out.println("\nDigite o dia do deu aniversário:");
+								aniversario = leia.nextInt();
+							} while (aniversario > 31);
 
 							loop = false;
 						} catch (InputMismatchException erro) {
@@ -149,9 +153,9 @@ public class menu {
 							loop = true;
 						}
 					} while (loop);
-					
+
 					numero = contas.gerarNumero();
-					contas.cadastrar(new ContaPoupanca(titular, tipo, numero, agencia, saldo, aniversario));
+					contas.cadastrar(new ContaPoupanca(titular, senha, tipo, numero, agencia, saldo, aniversario));
 
 					System.out.println("\nConta criada com sucesso!");
 					contas.getContas().get(numero - 1).visualizar();
@@ -165,9 +169,7 @@ public class menu {
 							System.out.println("\nDigite o número da conta:");
 							numero = leia.nextInt();
 						} while (numero < 0);
-						
-						float saldoConta = contas.getContas().get(numero - 1).getSaldo();
-						
+
 						loop = false;
 
 					} catch (InputMismatchException erro) {
@@ -177,16 +179,36 @@ public class menu {
 						loop = true;
 					} catch (IndexOutOfBoundsException erro) {
 						System.out.println("\nConta não encontrada.");
-						
+
 						loop = true;
 					} catch (NullPointerException erro) {
-						
+
 						loop = true;
 					}
 				} while (loop);
 
-				float saldoConta = contas.getContas().get(numero - 1).getSaldo();
-				System.out.println("\nSeu saldo é de R$" + saldoConta + ".");
+				i = 1;
+				do {
+					System.out.println("\nDigite sua senha:");
+					senha = leia.next();
+
+					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+						loop = false;
+					} else if (i == 3) {
+						System.out.println("\nNúmero de tentativas excedido!");
+						loop = false;
+					} else {
+						System.out.println("\nSenha incorreta!");
+						i++;
+						loop = true;
+					}
+
+				} while (loop);
+
+				if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+					float saldoConta = contas.getContas().get(numero - 1).getSaldo();
+					System.out.println("\nSeu saldo é de R$" + saldoConta + ".");
+				}
 				break;
 			case 3:
 				do {
@@ -195,9 +217,9 @@ public class menu {
 							System.out.println("\nDigite o número da conta:");
 							numero = leia.nextInt();
 						} while (numero < 0);
-						
+
 						Conta conta = contas.getContas().get(numero - 1);
-						
+
 						loop = false;
 
 					} catch (InputMismatchException erro) {
@@ -207,40 +229,80 @@ public class menu {
 						loop = true;
 					} catch (IndexOutOfBoundsException erro) {
 						System.out.println("\nConta não encontrada.");
-						
+
 						loop = true;
 					} catch (NullPointerException erro) {
-						
+
 						loop = true;
 					}
 				} while (loop);
 
-				Conta conta = contas.getContas().get(numero - 1);
-				float valor = 0;
-				System.out.println("\nSeu saldo: R$ " + conta.getSaldo() + ".");
+				i = 1;
 				do {
-					try {
-						do {
-							System.out.println("\nDigite valor do saque (em R$):");
-							valor = leia.nextInt();
+					System.out.println("\nDigite sua senha:");
+					senha = leia.next();
 
-							if (valor < 0) {
-								System.out.println("\nNão é possível realizar a operação de saque com essse valor.");
-							}
-						} while (valor < 0);
+					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
 						loop = false;
-
-					} catch (InputMismatchException erro) {
-						System.out.println("\nPor favor, digite apenas números.");
-						leia.next();
-
+					} else if (i == 3) {
+						System.out.println("\nNúmero de tentativas excedido!");
+						loop = false;
+					} else {
+						System.out.println("\nSenha incorreta!");
+						i++;
 						loop = true;
 					}
+
 				} while (loop);
 
-				contas.sacar(numero, valor);
-				System.out.println("\nSaldo atual: R$ " + conta.getSaldo() + ".");
+				if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+					Conta conta = contas.getContas().get(numero - 1);
+					float valor = 0;
+					System.out.println("\nSeu saldo: R$ " + conta.getSaldo() + ".");
+					do {
+						try {
+							do {
+								System.out.println("\nDigite valor do saque (em R$):");
+								valor = leia.nextInt();
 
+								if (valor < 0) {
+									System.out
+											.println("\nNão é possível realizar a operação de saque com essse valor.");
+								}
+							} while (valor < 0);
+							loop = false;
+
+						} catch (InputMismatchException erro) {
+							System.out.println("\nPor favor, digite apenas números.");
+							leia.next();
+
+							loop = true;
+						}
+					} while (loop);
+
+					i = 1;
+					do {
+						System.out.println("\nDigite sua senha:");
+						senha = leia.next();
+
+						if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+							loop = false;
+						} else if (i == 3) {
+							System.out.println("\nNúmero de tentativas excedido!");
+							loop = false;
+						} else {
+							System.out.println("\nSenha incorreta!");
+							i++;
+							loop = true;
+						}
+
+					} while (loop);
+
+					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+						contas.sacar(numero, valor);
+						System.out.println("\nSaldo atual: R$ " + conta.getSaldo() + ".");
+					}
+				}
 				break;
 			case 4:
 				do {
@@ -250,7 +312,7 @@ public class menu {
 							numero = leia.nextInt();
 						} while (numero < 0);
 						loop = false;
-						
+
 						var contaDeposito = contas.procurarPorNumero(numero);
 
 					} catch (InputMismatchException erro) {
@@ -260,50 +322,72 @@ public class menu {
 						loop = true;
 					} catch (IndexOutOfBoundsException erro) {
 						System.out.println("\nConta não encontrada.");
-						
+
 						loop = true;
 					} catch (NullPointerException erro) {
-						
+
 						loop = true;
 					}
 				} while (loop);
+
+				i = 1;
 				do {
-					float valorDeposito = 0;
-					try {
-						do {
-							System.out.println("\nDigite o valor a ser depositado (em R$):");
-							valorDeposito = leia.nextInt();
-							if (valorDeposito < 0) {
-								System.out.println("Não é possível realizar a operação de depósito com essse valor.");
-							}
-						} while (valorDeposito < 0);
-						
+					System.out.println("\nDigite sua senha:");
+					senha = leia.next();
+
+					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
 						loop = false;
-						
-						var contaDeposito = contas.procurarPorNumero(numero);
-						contas.depositar(numero, valorDeposito);
-						
-						System.out.println("\nSaldo atual: R$ " + contaDeposito.getSaldo() + ".");
-
-					} catch (InputMismatchException erro) {
-						System.out.println("\nPor favor, digite apenas números.");
-						leia.next();
-
+					} else if (i == 3) {
+						System.out.println("\nNúmero de tentativas excedido!");
+						loop = false;
+					} else {
+						System.out.println("\nSenha incorreta!");
+						i++;
 						loop = true;
 					}
+
 				} while (loop);
+
+				if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+					do {
+						float valorDeposito = 0;
+						try {
+							do {
+								System.out.println("\nDigite o valor a ser depositado (em R$):");
+								valorDeposito = leia.nextInt();
+								if (valorDeposito < 0) {
+									System.out
+											.println("Não é possível realizar a operação de depósito com essse valor.");
+								}
+							} while (valorDeposito < 0);
+
+							loop = false;
+
+							var contaDeposito = contas.procurarPorNumero(numero);
+							contas.depositar(numero, valorDeposito);
+
+							System.out.println("\nSaldo atual: R$ " + contaDeposito.getSaldo() + ".");
+
+						} catch (InputMismatchException erro) {
+							System.out.println("\nPor favor, digite apenas números.");
+							leia.next();
+
+							loop = true;
+						}
+					} while (loop);
+				}
 				break;
 			case 5:
 				Conta contaOrigem, contaDestino;
-				
-				do {										
+
+				do {
 					try {
 						do {
 							System.out.println("\nDigite o número da conta:");
 							numero = leia.nextInt();
 						} while (numero < 0);
 						loop = false;
-						
+
 					} catch (InputMismatchException erro) {
 						System.out.println("\nPor favor, digite apenas números.");
 						leia.next();
@@ -311,67 +395,109 @@ public class menu {
 						loop = true;
 					} catch (IndexOutOfBoundsException erro) {
 						System.out.println("\nConta não encontrada.");
-						
+
 						loop = true;
 					} catch (NullPointerException erro) {
-						
-						loop = true;
-					}
-				} while (loop);
-				
-				contaOrigem = contas.procurarPorNumero(numero);
-				System.out.println("\nSeu saldo é de R$" + contaOrigem.getSaldo() + ".");
-				
-				float valorTransferencia = 0;
-				
-				do {										
-					try {
-						do {
-							System.out.println("\nDigite o valor que deseja transferir:");
-							valorTransferencia = leia.nextInt();
-							
-							if (valorTransferencia < 0) {
-								System.out.println("Não é possível realizar a operação de transferência com essse valor.");
-							} else if (valorTransferencia > contaOrigem.getSaldo()) {
-								System.out.println("\nSaldo insuficiente!");
-							}
-						} while (valorTransferencia < 0 && valorTransferencia > contaOrigem.getSaldo());
-						loop = false;
-						
-					} catch (InputMismatchException erro) {
-						System.out.println("\nPor favor, digite apenas números.");
-						leia.next();
 
 						loop = true;
 					}
 				} while (loop);
-				
-				do {										
-					try {
-						do {
-							System.out.println("\nDigite o número da conta para a qual deseja transferir:");
-							numero = leia.nextInt();
-						} while (numero < 0);
-						loop = false;
-						
-					} catch (InputMismatchException erro) {
-						System.out.println("\nPor favor, digite apenas números.");
-						leia.next();
 
-						loop = true;
-					} catch (IndexOutOfBoundsException erro) {
-						System.out.println("\nConta não encontrada.");
-						
-						loop = true;
-					} catch (NullPointerException erro) {
-						
+				i = 1;
+				do {
+					System.out.println("\nDigite sua senha:");
+					senha = leia.next();
+
+					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+						loop = false;
+					} else if (i == 3) {
+						System.out.println("\nNúmero de tentativas excedido!");
+						loop = false;
+					} else {
+						System.out.println("\nSenha incorreta!");
+						i++;
 						loop = true;
 					}
+
 				} while (loop);
-				
-				contaDestino = contas.procurarPorNumero(numero);
-				
-				contas.transferir(contaOrigem.getNumero(), contaDestino.getNumero(), valorTransferencia);
+
+				if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+					contaOrigem = contas.procurarPorNumero(numero);
+					System.out.println("\nSeu saldo é de R$" + contaOrigem.getSaldo() + ".");
+
+					float valorTransferencia = 0;
+
+					do {
+						try {
+							do {
+								System.out.println("\nDigite o valor que deseja transferir:");
+								valorTransferencia = leia.nextInt();
+
+								if (valorTransferencia < 0) {
+									System.out.println(
+											"Não é possível realizar a operação de transferência com essse valor.");
+								} else if (valorTransferencia > contaOrigem.getSaldo()) {
+									System.out.println("\nSaldo insuficiente!");
+								}
+							} while (valorTransferencia < 0 && valorTransferencia > contaOrigem.getSaldo());
+							loop = false;
+
+						} catch (InputMismatchException erro) {
+							System.out.println("\nPor favor, digite apenas números.");
+							leia.next();
+
+							loop = true;
+						}
+					} while (loop);
+
+					do {
+						try {
+							do {
+								System.out.println("\nDigite o número da conta para a qual deseja transferir:");
+								numero = leia.nextInt();
+							} while (numero < 0);
+							loop = false;
+
+						} catch (InputMismatchException erro) {
+							System.out.println("\nPor favor, digite apenas números.");
+							leia.next();
+
+							loop = true;
+						} catch (IndexOutOfBoundsException erro) {
+							System.out.println("\nConta não encontrada.");
+
+							loop = true;
+						} catch (NullPointerException erro) {
+
+							loop = true;
+						}
+					} while (loop);
+
+					i = 1;
+					do {
+						System.out.println("\nDigite sua senha:");
+						senha = leia.next();
+
+						if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+							loop = false;
+						} else if (i == 3) {
+							System.out.println("\nNúmero de tentativas excedido!");
+							loop = false;
+						} else {
+							System.out.println("\nSenha incorreta!");
+							i++;
+							loop = true;
+						}
+
+					} while (loop);
+
+					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+
+						contaDestino = contas.procurarPorNumero(numero);
+
+						contas.transferir(contaOrigem.getNumero(), contaDestino.getNumero(), valorTransferencia);
+					}
+				}
 				break;
 			case 6:
 				do {
@@ -381,7 +507,7 @@ public class menu {
 							numero = leia.nextInt();
 						} while (numero < 0);
 						loop = false;
-						
+
 						var contaAtualizada = contas.procurarPorNumero(numero);
 
 						int tipoConta = contaAtualizada.getTipo();
@@ -393,159 +519,91 @@ public class menu {
 						loop = true;
 					} catch (IndexOutOfBoundsException erro) {
 						System.out.println("\nConta não encontrada.");
-						
+
 						loop = true;
 					} catch (NullPointerException erro) {
-						
+
 						loop = true;
 					}
 				} while (loop);
 
-				var contaAtualizada = contas.procurarPorNumero(numero);
+				i = 1;
+				do {
+					System.out.println("\nDigite sua senha:");
+					senha = leia.next();
 
-				int tipoConta = contaAtualizada.getTipo();
-
-				if (contaAtualizada != null) {
-					if (tipoConta == 1) {
-						do {
-							try {
-								do {
-									System.out
-											.println("Digite qual dado deseja atualizar:\n1 - Atualizar nome do Titular"
-													+ "\n2 - Atualizar Agência\n3 - Atualizar limite de crédito\n4 - Alterar para Conta Poupança");
-									codigoOperacao = leia.nextInt();
-								} while (codigoOperacao < 1 && codigoOperacao > 4);
-
-								loop = false;
-
-							} catch (InputMismatchException erro) {
-								System.out.println("\nOPÇÃO INVÁLDA! Por favor, digite o número da opção.");
-								leia.next();
-
-								loop = true;
-							}
-						} while (loop);
+					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+						loop = false;
+					} else if (i == 3) {
+						System.out.println("\nNúmero de tentativas excedido!");
+						loop = false;
 					} else {
-						do {
-							try {
-								do {
-									System.out
-											.println("Digite qual dado deseja atualizar:\n1 - Atualizar nome do Titular"
-													+ "\n2 - Atualizar Agência\n3 - Atualizar data de aniversário"
-													+ "\n4 - Alterar para Conta Corrente");
-									codigoOperacao = leia.nextInt();
-								} while (codigoOperacao < 1 && codigoOperacao > 4);
-
-								loop = false;
-
-							} catch (InputMismatchException erro) {
-								System.out.println("\nOPÇÃO INVÁLDA! Por favor, digite o número da opção.");
-								leia.next();
-
-								loop = true;
-							}
-						} while (loop);
+						System.out.println("\nSenha incorreta!");
+						i++;
+						loop = true;
 					}
 
-					switch (codigoOperacao) {
-					case 1:
-						contas.atualizar(numero, codigoOperacao);
-						break;
-					case 2:
-						contas.atualizar(numero, codigoOperacao);
-						break;
-					case 3:
+				} while (loop);
+
+				if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+					var contaAtualizada = contas.procurarPorNumero(numero);
+
+					int tipoConta = contaAtualizada.getTipo();
+
+					if (contaAtualizada != null) {
 						if (tipoConta == 1) {
 							do {
 								try {
-									System.out.println("\nDigite o novo valor do limite de crédito da conta:");
-									limite = leia.nextFloat();
+									do {
+										System.out.println(
+												"Digite qual dado deseja atualizar:\n1 - Atualizar nome do Titular"
+														+ "\n2 - Atualizar Agência\n3 - Atualizar limite de crédito\n4 - Alterar para Conta Poupança");
+										codigoOperacao = leia.nextInt();
+									} while (codigoOperacao < 1 && codigoOperacao > 4);
 
 									loop = false;
+
 								} catch (InputMismatchException erro) {
-									System.out.println("\nPor favor, digite apenas números.");
+									System.out.println("\nOPÇÃO INVÁLDA! Por favor, digite o número da opção.");
 									leia.next();
 
 									loop = true;
 								}
 							} while (loop);
-
-							contas.atualizarLimite(numero, limite);
-
-						} else if (tipoConta == 2) {
+						} else {
 							do {
 								try {
-									System.out.println("\nDigite o dia do deu aniversário atualizado:");
-									aniversario = leia.nextInt();
+									do {
+										System.out.println(
+												"Digite qual dado deseja atualizar:\n1 - Atualizar nome do Titular"
+														+ "\n2 - Atualizar Agência\n3 - Atualizar data de aniversário"
+														+ "\n4 - Alterar para Conta Corrente");
+										codigoOperacao = leia.nextInt();
+									} while (codigoOperacao < 1 && codigoOperacao > 4);
 
 									loop = false;
+
 								} catch (InputMismatchException erro) {
-									System.out.println("\nPor favor, digite apenas números.");
+									System.out.println("\nOPÇÃO INVÁLDA! Por favor, digite o número da opção.");
 									leia.next();
 
 									loop = true;
 								}
 							} while (loop);
-
-							contas.atualizarAniversario(numero, aniversario);
-
 						}
-						break;
-					case 4:
-						if (tipoConta == 1) {
-							do {
-								try {
-									do {
-										System.out.println("\nDeseja atualizar sua Conta Corrente para Conta Poupança?"
-												+ "\n1 - Sim\n2 - Não");
-										codigoOperacao = leia.nextInt();
-									} while (codigoOperacao < 1 && codigoOperacao > 2);
 
-									loop = false;
-								} catch (InputMismatchException erro) {
-									System.out.println("\nOPÇÃO INVÁLDA! Por favor, digite o número da opção.");
-									leia.next();
-
-									loop = true;
-								}
-							} while (loop);
-							if (codigoOperacao == 1) {
+						switch (codigoOperacao) {
+						case 1:
+							contas.atualizar(numero, codigoOperacao);
+							break;
+						case 2:
+							contas.atualizar(numero, codigoOperacao);
+							break;
+						case 3:
+							if (tipoConta == 1) {
 								do {
 									try {
-										System.out.println("\nDigite o dia do deu aniversário:");
-										aniversario = leia.nextInt();
-
-										loop = false;
-									} catch (InputMismatchException erro) {
-										System.out.println("\nPor favor, digite apenas números.");
-										leia.next();
-
-										loop = true;
-									}
-								} while (loop);
-								contas.atualizarParapoupanca(numero, aniversario);
-							}
-						} else if (tipoConta == 2) {
-							do {
-								try {
-									do {
-										System.out.println("\nDeseja atualizar sua Conta Poupança para Conta Corrente?"
-												+ "\n1 - Sim\n2 - Não");
-										codigoOperacao = leia.nextInt();
-									} while (codigoOperacao < 1 && codigoOperacao > 2);
-
-									loop = false;
-								} catch (InputMismatchException erro) {
-									System.out.println("\nOPÇÃO INVÁLDA! Por favor, digite o número da opção.");
-									leia.next();
-
-									loop = true;
-								}
-							} while (loop);
-							if (codigoOperacao == 1) {
-								do {
-									try {
-										System.out.println("\nDigite o valor do limite de crédito da conta:");
+										System.out.println("\nDigite o novo valor do limite de crédito da conta:");
 										limite = leia.nextFloat();
 
 										loop = false;
@@ -556,11 +614,159 @@ public class menu {
 										loop = true;
 									}
 								} while (loop);
-								contas.atualizarParaCorrente(numero, limite);
+
+								i = 1;
+								do {
+									System.out.println("\nDigite sua senha:");
+									senha = leia.next();
+
+									if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+										loop = false;
+									} else if (i == 3) {
+										System.out.println("\nNúmero de tentativas excedido!");
+										loop = false;
+									} else {
+										System.out.println("\nSenha incorreta!");
+										i++;
+										loop = true;
+									}
+
+								} while (loop);
+
+								if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+									contas.atualizarLimite(numero, limite);
+								}
+
+							} else if (tipoConta == 2) {
+								do {
+									try {
+										System.out.println("\nDigite o dia do deu aniversário atualizado:");
+										aniversario = leia.nextInt();
+
+										loop = false;
+									} catch (InputMismatchException erro) {
+										System.out.println("\nPor favor, digite apenas números.");
+										leia.next();
+
+										loop = true;
+									}
+								} while (loop);
+
+								contas.atualizarAniversario(numero, aniversario);
 
 							}
-						}
+							break;
+						case 4:
+							if (tipoConta == 1) {
+								do {
+									try {
+										do {
+											System.out.println(
+													"\nDeseja atualizar sua Conta Corrente para Conta Poupança?"
+															+ "\n1 - Sim\n2 - Não");
+											codigoOperacao = leia.nextInt();
+										} while (codigoOperacao < 1 && codigoOperacao > 2);
 
+										loop = false;
+									} catch (InputMismatchException erro) {
+										System.out.println("\nOPÇÃO INVÁLDA! Por favor, digite o número da opção.");
+										leia.next();
+
+										loop = true;
+									}
+								} while (loop);
+								if (codigoOperacao == 1) {
+									do {
+										try {
+											System.out.println("\nDigite o dia do deu aniversário:");
+											aniversario = leia.nextInt();
+
+											loop = false;
+										} catch (InputMismatchException erro) {
+											System.out.println("\nPor favor, digite apenas números.");
+											leia.next();
+
+											loop = true;
+										}
+									} while (loop);
+									i = 1;
+									do {
+										System.out.println("\nDigite sua senha:");
+										senha = leia.next();
+
+										if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+											loop = false;
+										} else if (i == 3) {
+											System.out.println("\nNúmero de tentativas excedido!");
+											loop = false;
+										} else {
+											System.out.println("\nSenha incorreta!");
+											i++;
+											loop = true;
+										}
+
+									} while (loop);
+
+									if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+										contas.atualizarParapoupanca(numero, aniversario);
+									}
+								}
+							} else if (tipoConta == 2) {
+								do {
+									try {
+										do {
+											System.out.println(
+													"\nDeseja atualizar sua Conta Poupança para Conta Corrente?"
+															+ "\n1 - Sim\n2 - Não");
+											codigoOperacao = leia.nextInt();
+										} while (codigoOperacao < 1 && codigoOperacao > 2);
+
+										loop = false;
+									} catch (InputMismatchException erro) {
+										System.out.println("\nOPÇÃO INVÁLDA! Por favor, digite o número da opção.");
+										leia.next();
+
+										loop = true;
+									}
+								} while (loop);
+								if (codigoOperacao == 1) {
+									do {
+										try {
+											System.out.println("\nDigite o valor do limite de crédito da conta:");
+											limite = leia.nextFloat();
+
+											loop = false;
+										} catch (InputMismatchException erro) {
+											System.out.println("\nPor favor, digite apenas números.");
+											leia.next();
+
+											loop = true;
+										}
+									} while (loop);
+									i = 1;
+									do {
+										System.out.println("\nDigite sua senha:");
+										senha = leia.next();
+
+										if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+											loop = false;
+										} else if (i == 3) {
+											System.out.println("\nNúmero de tentativas excedido!");
+											loop = false;
+										} else {
+											System.out.println("\nSenha incorreta!");
+											i++;
+											loop = true;
+										}
+
+									} while (loop);
+
+									if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+										contas.atualizarParaCorrente(numero, limite);
+									}
+								}
+							}
+						}
 					}
 				}
 				break;
@@ -571,9 +777,28 @@ public class menu {
 							System.out.println("\nDigite o número da conta:");
 							numero = leia.nextInt();
 						} while (numero < 0);
-						
-						contas.visualizar(numero);
-						
+						i = 1;
+						do {
+							System.out.println("\nDigite sua senha:");
+							senha = leia.next();
+
+							if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+								loop = false;
+							} else if (i == 3) {
+								System.out.println("\nNúmero de tentativas excedido!");
+								loop = false;
+							} else {
+								System.out.println("\nSenha incorreta!");
+								i++;
+								loop = true;
+							}
+
+						} while (loop);
+
+						if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+							contas.visualizar(numero);
+						}
+
 						loop = false;
 
 					} catch (InputMismatchException erro) {
@@ -583,10 +808,10 @@ public class menu {
 						loop = true;
 					} catch (IndexOutOfBoundsException erro) {
 						System.out.println("\nConta não encontrada.");
-						
+
 						loop = true;
 					} catch (NullPointerException erro) {
-						
+
 						loop = true;
 					}
 				} while (loop);
@@ -600,12 +825,32 @@ public class menu {
 						do {
 							System.out.println("\nDigite o número da conta:");
 							numero = leia.nextInt();
-							
+
 						} while (numero < 0);
 						loop = false;
-						
-						Conta contaApagar = contas.procurarPorNumero(numero);
-						contas.visualizar(numero);
+
+						i = 1;
+						do {
+							System.out.println("\nDigite sua senha:");
+							senha = leia.next();
+
+							if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+								loop = false;
+							} else if (i == 3) {
+								System.out.println("\nNúmero de tentativas excedido!");
+								loop = false;
+							} else {
+								System.out.println("\nSenha incorreta!");
+								i++;
+								loop = true;
+							}
+
+						} while (loop);
+
+						if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+							Conta contaApagar = contas.procurarPorNumero(numero);
+							contas.visualizar(numero);
+						}
 
 					} catch (InputMismatchException erro) {
 						System.out.println("\nPor favor, digite apenas números.");
@@ -614,16 +859,15 @@ public class menu {
 						loop = true;
 					} catch (IndexOutOfBoundsException erro) {
 						System.out.println("\nConta não encontrada.");
-						
+
 						loop = true;
 					} catch (NullPointerException erro) {
-						
+
 						loop = true;
 					}
 				} while (loop);
 
 				Conta contaApagar = contas.procurarPorNumero(numero);
-				contas.visualizar(numero);
 
 				do {
 					int opcaoApagar = 0, opcaoTransferir = 0;
@@ -637,52 +881,92 @@ public class menu {
 						loop = false;
 
 						if (opcaoApagar == 1) {
-							if (contaApagar.getSaldo() > 0) {
-								int numeroAReceber = 0;
+							i = 1;
+							do {
+								System.out.println("\nDigite sua senha:");
+								senha = leia.next();
 
-								System.out.println("Você possui um saldo de R$" + contaApagar.getSaldo() + ".");
-								do {
-									try {
-										do {
-											System.out.println(
-													"\nDigite o número da conta para a qual deseja transferir este valor:");
-											numeroAReceber = leia.nextInt();
-											var contaAReceber = contas.procurarPorNumero(numeroAReceber);
+								if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+									loop = false;
+								} else if (i == 3) {
+									System.out.println("\nNúmero de tentativas excedido!");
+									loop = false;
+								} else {
+									System.out.println("\nSenha incorreta!");
+									i++;
+									loop = true;
+								}
+
+							} while (loop);
+
+							if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+								if (contaApagar.getSaldo() > 0) {
+									int numeroAReceber = 0;
+
+									System.out.println("Você possui um saldo de R$" + contaApagar.getSaldo() + ".");
+									do {
+										try {
 											do {
-												System.out.println("\n" + contaAReceber.getTitular() + "."
-														+ "\nConta: " + contaAReceber.getNumero() + "\nAgência: " + contaAReceber.getAgencia() 
-														+ "\nValor a transferir: R$" + contaApagar.getSaldo() + "."
-														+ "\n\n1 - Confirmar transferencia.\n2 - Tranferir para outra conta.");
-												opcaoTransferir = leia.nextInt();
-											} while (opcaoTransferir < 1 && opcaoTransferir > 2);
-										} while (opcaoTransferir == 2);
+												System.out.println(
+														"\nDigite o número da conta para a qual deseja transferir este valor:");
+												numeroAReceber = leia.nextInt();
+												var contaAReceber = contas.procurarPorNumero(numeroAReceber);
+												do {
+													System.out.println("\n" + contaAReceber.getTitular() + "."
+															+ "\nConta: " + contaAReceber.getNumero() + "\nAgência: "
+															+ contaAReceber.getAgencia() + "\nValor a transferir: R$"
+															+ contaApagar.getSaldo() + "."
+															+ "\n\n1 - Confirmar transferencia.\n2 - Tranferir para outra conta.");
+													opcaoTransferir = leia.nextInt();
+												} while (opcaoTransferir < 1 && opcaoTransferir > 2);
+											} while (opcaoTransferir == 2);
 
-										loop = false;
-									} catch (InputMismatchException erro) {
-										System.out.println("\nOPÇÃO INVÁLDA! Por favor, digite o número da opção.");
-										leia.next();
+											loop = false;
+										} catch (InputMismatchException erro) {
+											System.out.println("\nOPÇÃO INVÁLDA! Por favor, digite o número da opção.");
+											leia.next();
 
-										loop = true;
-									} catch (IndexOutOfBoundsException erro) {
-										System.out.println("\nConta não encontrada.");
-										leia.next();
-										
-										loop = true;
-									} catch (NullPointerException erro) {
-										leia.next();
-										
-										loop = true;
+											loop = true;
+										} catch (IndexOutOfBoundsException erro) {
+											System.out.println("\nConta não encontrada.");
+											leia.next();
+
+											loop = true;
+										} catch (NullPointerException erro) {
+											leia.next();
+
+											loop = true;
+										}
+									} while (loop);
+
+									i = 1;
+									do {
+										System.out.println("\nDigite sua senha:");
+										senha = leia.next();
+
+										if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+											loop = false;
+										} else if (i == 3) {
+											System.out.println("\nNúmero de tentativas excedido!");
+											loop = false;
+										} else {
+											System.out.println("\nSenha incorreta!");
+											i++;
+											loop = true;
+										}
+
+									} while (loop);
+
+									if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+										contas.transferir(numero, numeroAReceber, contaApagar.getSaldo());
+										System.out.println("\nValor tranferido para conta " + numeroAReceber + "!"
+												+ "\n\nConta " + contaApagar.getNumero() + " apagada!");
+										contas.deletar(numero);
 									}
-								} while (loop);
-
-								contas.transferir(numero, numeroAReceber, contaApagar.getSaldo());
-								System.out.println("\nValor tranferido para conta " + numeroAReceber + "!"
-										+ "\n\nConta " + contaApagar.getNumero() + " deletada!");
-								contas.deletar(numero);
-
-							} else {
-								System.out.println("\nConta " + contaApagar.getNumero() + " deletada!");
-								contas.deletar(numero);
+								} else {
+									System.out.println("\nConta " + contaApagar.getNumero() + " apagada!");
+									contas.deletar(numero);
+								}
 							}
 						}
 					} catch (InputMismatchException erro) {

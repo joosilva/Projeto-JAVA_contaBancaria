@@ -10,15 +10,16 @@ public abstract class Conta {
 	private int agencia;
 	private int tipo;
 	private String titular;
+	private String senha;
 	private float saldo = 0;
 
-	public Conta(String titular, int tipo, int numero, int agencia, float saldo) {
-		super();
+	public Conta(String titular, String senha, int tipo, int numero, int agencia, float saldo) {
 		this.numero = numero;
 		this.agencia = agencia;
 		this.tipo = tipo;
 		this.titular = titular;
 		this.saldo = saldo;
+		this.senha = senha;
 	}
 
 	public int getNumero() {
@@ -94,5 +95,13 @@ public abstract class Conta {
 				+ tipo + " - " + getNumero() + "." + "\nAgência: " + getAgencia() + "."
 				+ "\nSaldo: R$" + getSaldo() + ".");	
 		}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
 
 }

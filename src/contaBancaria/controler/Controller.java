@@ -22,6 +22,34 @@ public class Controller implements Repository {
 		this.contas = contas;
 	}
 
+	public String criarSenha() {
+		String senha, verificaSenha;
+		boolean loop = false;
+		do {
+			do {
+				System.out.println("\nDigite uma senha de, no mínimo, 6 dígitos:");
+				senha = leia.nextLine();
+				
+				if (senha.length() < 6) {
+					System.out.println("\nA senha deve conter pelo menos 6 caracteres!");
+				}
+				
+			} while (senha.length() < 6);
+
+			System.out.println("\nConfirme sua senha:");
+			verificaSenha = leia.nextLine();
+
+			if (senha.equals(verificaSenha)) {
+				loop = false;
+			} else {
+				System.out.println("\nAs senhas não coincidem. Digite novamente.");
+				loop = true;
+			}
+		} while (loop);
+
+		return senha;
+	}
+
 	public int gerarNumero() {
 		boolean j = false;
 		int numero = 0;
@@ -56,8 +84,8 @@ public class Controller implements Repository {
 		for (int i = 0; i < contas.size(); i++) {
 			var conta = contas.get(i);
 			try {
-			conta.visualizar();
-			} catch (NullPointerException erro) {	
+				conta.visualizar();
+			} catch (NullPointerException erro) {
 			}
 		}
 
@@ -103,10 +131,10 @@ public class Controller implements Repository {
 	public void atualizarLimite(int numero, float limite) {
 		var conta = procurarPorNumero(numero);
 
-		String titular = conta.getTitular();
+		String titular = conta.getTitular(), senha = conta.getSenha();
 		int tipo = conta.getTipo(), agencia = conta.getAgencia();
 		float saldo = conta.getSaldo();
-		ContaCorrente nova = new ContaCorrente(titular, tipo, numero, agencia, saldo, limite);
+		ContaCorrente nova = new ContaCorrente(titular, senha, tipo, numero, agencia, saldo, limite);
 		contas.set((numero - 1), nova);
 		System.out.println("\nSeu limite de crédito foi atuaizado para: R$" + limite + ".");
 	}
@@ -115,10 +143,10 @@ public class Controller implements Repository {
 	public void atualizarAniversario(int numero, int aniversario) {
 		var conta = procurarPorNumero(numero);
 
-		String titular = conta.getTitular();
+		String titular = conta.getTitular(), senha = conta.getSenha();
 		int tipo = conta.getTipo(), agencia = conta.getAgencia();
 		float saldo = conta.getSaldo();
-		ContaCorrente nova = new ContaCorrente(titular, tipo, numero, agencia, saldo, aniversario);
+		ContaCorrente nova = new ContaCorrente(titular, senha, tipo, numero, agencia, saldo, aniversario);
 		contas.set((numero - 1), nova);
 		System.out.println("\nSeu aniversário foi atuaizado para: " + aniversario + ".");
 	}
@@ -128,10 +156,10 @@ public class Controller implements Repository {
 		var conta = procurarPorNumero(numero);
 
 		conta.setTipo(1);
-		String titular = conta.getTitular();
+		String titular = conta.getTitular(), senha = conta.getSenha();
 		int tipo = conta.getTipo(), agencia = conta.getAgencia();
 		float saldo = conta.getSaldo();
-		ContaCorrente nova = new ContaCorrente(titular, tipo, numero, agencia, saldo, limite);
+		ContaCorrente nova = new ContaCorrente(titular, senha, tipo, numero, agencia, saldo, limite);
 		contas.set((numero - 1), nova);
 		System.out.println("\nSua Conta Poupança foi alterada para Conta Corrente, " + conta.getTitular() + ".");
 
@@ -142,10 +170,10 @@ public class Controller implements Repository {
 		var conta = procurarPorNumero(numero);
 
 		conta.setTipo(2);
-		String titular = conta.getTitular();
+		String titular = conta.getTitular(), senha = conta.getSenha();
 		int tipo = conta.getTipo(), agencia = conta.getAgencia();
 		float saldo = conta.getSaldo();
-		ContaCorrente nova = new ContaCorrente(titular, tipo, numero, agencia, saldo, aniversario);
+		ContaCorrente nova = new ContaCorrente(titular, senha, tipo, numero, agencia, saldo, aniversario);
 		contas.set((numero - 1), nova);
 		System.out.println("\nSua Conta Corrente foi alterada para Conta Poupança, " + conta.getTitular() + ".");
 
