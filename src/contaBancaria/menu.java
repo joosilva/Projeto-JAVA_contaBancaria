@@ -26,7 +26,7 @@ public class menu {
 
 		int codigoOperacao = 1, numero = 0, agencia = 0, tipo = 0, aniversario = 0, i = 0;
 		float saldo = 0, limite = 0;
-		String titular, senha;
+		String titular, senha = "";
 
 		System.out.println(cor.TEXT_YELLOW_BOLD + "\t\nBEM-VINDE AO BANCO GEN!" + cor.TEXT_RESET);
 
@@ -169,30 +169,27 @@ public class menu {
 							System.out.println("\nDigite o número da conta:");
 							numero = leia.nextInt();
 						} while (numero < 0);
-
-						loop = false;
-
+						
 					} catch (InputMismatchException erro) {
 						System.out.println("\nPor favor, digite apenas números.");
 						leia.next();
 
 						loop = true;
-					} catch (IndexOutOfBoundsException erro) {
-						System.out.println("\nConta não encontrada.");
-
+					}
+					if(contas.procurarPorNumero(numero) == null) {
 						loop = true;
-					} catch (NullPointerException erro) {
-
-						loop = true;
+					} else {
+						loop = false;
 					}
 				} while (loop);
 
 				i = 1;
 				do {
+					var conta = contas.procurarPorNumero(numero);
 					System.out.println("\nDigite sua senha:");
 					senha = leia.next();
 
-					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+					if (senha.equals(conta.getSenha())) {
 						loop = false;
 					} else if (i == 3) {
 						System.out.println("\nNúmero de tentativas excedido!");
@@ -204,9 +201,8 @@ public class menu {
 					}
 
 				} while (loop);
-
 				if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
-					float saldoConta = contas.getContas().get(numero - 1).getSaldo();
+					float saldoConta = contas.procurarPorNumero(numero).getSaldo();
 					System.out.println("\nSeu saldo é de R$" + saldoConta + ".");
 				}
 				break;
@@ -217,32 +213,27 @@ public class menu {
 							System.out.println("\nDigite o número da conta:");
 							numero = leia.nextInt();
 						} while (numero < 0);
-
-						Conta conta = contas.getContas().get(numero - 1);
-
-						loop = false;
-
+						
 					} catch (InputMismatchException erro) {
 						System.out.println("\nPor favor, digite apenas números.");
 						leia.next();
 
 						loop = true;
-					} catch (IndexOutOfBoundsException erro) {
-						System.out.println("\nConta não encontrada.");
-
+					}
+					if(contas.procurarPorNumero(numero) == null) {
 						loop = true;
-					} catch (NullPointerException erro) {
-
-						loop = true;
+					} else {
+						loop = false;
 					}
 				} while (loop);
 
 				i = 1;
 				do {
+					var conta = contas.procurarPorNumero(numero);
 					System.out.println("\nDigite sua senha:");
 					senha = leia.next();
 
-					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+					if (senha.equals(conta.getSenha())) {
 						loop = false;
 					} else if (i == 3) {
 						System.out.println("\nNúmero de tentativas excedido!");
@@ -254,9 +245,8 @@ public class menu {
 					}
 
 				} while (loop);
-
 				if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
-					Conta conta = contas.getContas().get(numero - 1);
+					Conta conta = contas.procurarPorNumero(numero);
 					float valor = 0;
 					System.out.println("\nSeu saldo: R$ " + conta.getSaldo() + ".");
 					do {
@@ -311,31 +301,27 @@ public class menu {
 							System.out.println("\nDigite o número da conta:");
 							numero = leia.nextInt();
 						} while (numero < 0);
-						loop = false;
-
-						var contaDeposito = contas.procurarPorNumero(numero);
-
+						
 					} catch (InputMismatchException erro) {
 						System.out.println("\nPor favor, digite apenas números.");
 						leia.next();
 
 						loop = true;
-					} catch (IndexOutOfBoundsException erro) {
-						System.out.println("\nConta não encontrada.");
-
+					}
+					if(contas.procurarPorNumero(numero) == null) {
 						loop = true;
-					} catch (NullPointerException erro) {
-
-						loop = true;
+					} else {
+						loop = false;
 					}
 				} while (loop);
 
 				i = 1;
 				do {
+					var conta = contas.procurarPorNumero(numero);
 					System.out.println("\nDigite sua senha:");
 					senha = leia.next();
 
-					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+					if (senha.equals(conta.getSenha())) {
 						loop = false;
 					} else if (i == 3) {
 						System.out.println("\nNúmero de tentativas excedido!");
@@ -347,7 +333,6 @@ public class menu {
 					}
 
 				} while (loop);
-
 				if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
 					do {
 						float valorDeposito = 0;
@@ -386,29 +371,27 @@ public class menu {
 							System.out.println("\nDigite o número da conta:");
 							numero = leia.nextInt();
 						} while (numero < 0);
-						loop = false;
 
 					} catch (InputMismatchException erro) {
 						System.out.println("\nPor favor, digite apenas números.");
 						leia.next();
 
 						loop = true;
-					} catch (IndexOutOfBoundsException erro) {
-						System.out.println("\nConta não encontrada.");
-
+					}
+					if (contas.procurarPorNumero(numero) == null) {
 						loop = true;
-					} catch (NullPointerException erro) {
-
-						loop = true;
+					} else {
+						loop = false;
 					}
 				} while (loop);
 
 				i = 1;
 				do {
+					var conta = contas.procurarPorNumero(numero);
 					System.out.println("\nDigite sua senha:");
 					senha = leia.next();
 
-					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+					if (senha.equals(conta.getSenha())) {
 						loop = false;
 					} else if (i == 3) {
 						System.out.println("\nNúmero de tentativas excedido!");
@@ -420,7 +403,6 @@ public class menu {
 					}
 
 				} while (loop);
-
 				if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
 					contaOrigem = contas.procurarPorNumero(numero);
 					System.out.println("\nSeu saldo é de R$" + contaOrigem.getSaldo() + ".");
@@ -463,13 +445,11 @@ public class menu {
 							leia.next();
 
 							loop = true;
-						} catch (IndexOutOfBoundsException erro) {
-							System.out.println("\nConta não encontrada.");
-
+						}
+						if (contas.procurarPorNumero(numero) == null) {
 							loop = true;
-						} catch (NullPointerException erro) {
-
-							loop = true;
+						} else {
+							loop = false;
 						}
 					} while (loop);
 
@@ -478,7 +458,7 @@ public class menu {
 						System.out.println("\nDigite sua senha:");
 						senha = leia.next();
 
-						if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+						if (senha.equals(contaOrigem.getSenha())) {
 							loop = false;
 						} else if (i == 3) {
 							System.out.println("\nNúmero de tentativas excedido!");
@@ -491,7 +471,7 @@ public class menu {
 
 					} while (loop);
 
-					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+					if (senha.equals(contaOrigem.getSenha())) {
 
 						contaDestino = contas.procurarPorNumero(numero);
 
@@ -506,33 +486,27 @@ public class menu {
 							System.out.println("\nDigite o número da conta:");
 							numero = leia.nextInt();
 						} while (numero < 0);
-						loop = false;
-
-						var contaAtualizada = contas.procurarPorNumero(numero);
-
-						int tipoConta = contaAtualizada.getTipo();
 
 					} catch (InputMismatchException erro) {
 						System.out.println("\nPor favor, digite apenas números.");
 						leia.next();
 
 						loop = true;
-					} catch (IndexOutOfBoundsException erro) {
-						System.out.println("\nConta não encontrada.");
-
+					}
+					if (contas.procurarPorNumero(numero) == null) {
 						loop = true;
-					} catch (NullPointerException erro) {
-
-						loop = true;
+					} else {
+						loop = false;
 					}
 				} while (loop);
 
 				i = 1;
 				do {
+					var conta = contas.procurarPorNumero(numero);
 					System.out.println("\nDigite sua senha:");
 					senha = leia.next();
 
-					if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+					if (senha.equals(conta.getSenha())) {
 						loop = false;
 					} else if (i == 3) {
 						System.out.println("\nNúmero de tentativas excedido!");
@@ -544,7 +518,6 @@ public class menu {
 					}
 
 				} while (loop);
-
 				if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
 					var contaAtualizada = contas.procurarPorNumero(numero);
 
@@ -777,44 +750,41 @@ public class menu {
 							System.out.println("\nDigite o número da conta:");
 							numero = leia.nextInt();
 						} while (numero < 0);
-						i = 1;
-						do {
-							System.out.println("\nDigite sua senha:");
-							senha = leia.next();
-
-							if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
-								loop = false;
-							} else if (i == 3) {
-								System.out.println("\nNúmero de tentativas excedido!");
-								loop = false;
-							} else {
-								System.out.println("\nSenha incorreta!");
-								i++;
-								loop = true;
-							}
-
-						} while (loop);
-
-						if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
-							contas.visualizar(numero);
-						}
-
-						loop = false;
 
 					} catch (InputMismatchException erro) {
 						System.out.println("\nPor favor, digite apenas números.");
 						leia.next();
 
 						loop = true;
-					} catch (IndexOutOfBoundsException erro) {
-						System.out.println("\nConta não encontrada.");
-
+					}
+					if (contas.procurarPorNumero(numero) == null) {
 						loop = true;
-					} catch (NullPointerException erro) {
-
-						loop = true;
+					} else {
+						loop = false;
 					}
 				} while (loop);
+
+				i = 1;
+				do {
+					var conta = contas.procurarPorNumero(numero);
+					System.out.println("\nDigite sua senha:");
+					senha = leia.next();
+
+					if (senha.equals(conta.getSenha())) {
+						loop = false;
+					} else if (i == 3) {
+						System.out.println("\nNúmero de tentativas excedido!");
+						loop = false;
+					} else {
+						System.out.println("\nSenha incorreta!");
+						i++;
+						loop = true;
+					}
+
+				} while (loop);
+				if (senha.equals(contas.getContas().get(numero - 1).getSenha())) {
+					contas.visualizar(numero);
+				}
 				break;
 			case 8:
 				contas.listarTodas();

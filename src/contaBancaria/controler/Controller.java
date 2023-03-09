@@ -76,6 +76,9 @@ public class Controller implements Repository {
 		} catch (IndexOutOfBoundsException erro) {
 			System.out.println("\nConta não encontrada!");
 			return null;
+		} catch (NullPointerException erro) {
+			System.out.println("\nConta não encontrada!");
+			return null;
 		}
 	}
 
@@ -203,6 +206,8 @@ public class Controller implements Repository {
 		float saldoOrigem = contaOrigem.getSaldo(), saldoDestino = contaDestino.getSaldo();
 		contaDestino.setSaldo(saldoDestino + valor);
 		contaOrigem.setSaldo(saldoOrigem - valor);
+		System.out.println("\nTransferência realizada com sucesso!");
+		System.out.println("\nSeu saldo é de R$" + contaOrigem.getSaldo() + ".");
 	}
 
 }
